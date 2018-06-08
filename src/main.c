@@ -6,6 +6,9 @@
  **/
 #include <stdio.h>
 #include <inttypes.h>
+#include <string.h>
+
+#define VERSION "1.0"
 
 void hours_minutes_to_float(int argcount, char **args)
 {
@@ -53,10 +56,11 @@ void hours_minutes_to_float(int argcount, char **args)
 	}
 }
 
-void display_help()
+void print_help()
 {
-	char *help = 	"timec: The Simple Time Converter\n"
-					"Usage:\n"
+	char *help = 	"timec: The Simple Time Converter v"
+					VERSION
+					"\nUsage:\n"
 					"\ttimec [<time>...]\n"
 					"\n";
 	printf("%s", help);
@@ -101,7 +105,15 @@ int main(int argcount, char **args)
 		total_args++;
 	}
 
-	hours_minutes_to_float(total_args, arguments);
+	for (int i=0;i<sizeof(options);i++) {
+		if (strcmp(options[i], "-h") || strcmp(options[i], "--help")) {
+			print_help();
+			return 0;
+		}
+	}
+
+	if (sizeof(arguments) > 0) 
+		hours_minutes_to_float(total_args, arguments);
 
 	printf("\n");
 
