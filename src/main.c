@@ -118,6 +118,9 @@ int main(int argcount, char **args)
 	if (sizeof(arguments) > 0) 
 		hours_minutes_to_float(total_args, arguments);
 
+	if (sizeof(arguments) == 0 && sizeof(options) == 0)
+			print_help();
+
 	printf("\n");
 
 	return 0;
