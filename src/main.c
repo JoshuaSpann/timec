@@ -61,7 +61,10 @@ void print_help()
 	char *help = 	"timec: The Simple Time Converter v"
 					VERSION
 					"\nUsage:\n"
-					"\ttimec [<time>...]\n"
+					"  timec [<time>...]\n"
+					"  timec -o | --option [<time>...]\n"
+					"\nOptions:\n"
+					"  -h | --help\tDisplay this help message\n"
 					"\n";
 	printf("%s", help);
 }
