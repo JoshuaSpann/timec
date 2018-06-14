@@ -54,38 +54,6 @@ int* numbers_from_argument(char *arg)
 	numbers[1] = seconds;
 	return numbers;
 }
-//int* numbers_from_argument(char *argument)
-/*
-{
-	static int numbers[2] = {0,0};
-	int secondsi = 0;
-	char minuteschar[10];
-	char secondschar[10];
-
-	
-//
-		// Iterate through all characters in argument //
-		for (int j=0;j<sizeof(argument)+2;j++) {
-			char argch = argument[j];
-
-			// Find minutes-seconds marker //
-			if (argch == ':') {
-				secondsi = j;
-				continue;
-			}
-
-			// Print out minutes only //
-			if (j > secondsi && secondsi != 0) {
-				secondschar[j-secondsi-1] = argch;
-				continue;
-			}
-			minuteschar[j] = argch;
-		}
-//
-	numbers[0] = 0;
-	numbers[1] = 0;
-	return numbers;
-}*/
 
 // TODO convert number_before_colon to 12-hour time and return output string
 char* clock24_to_clock12(char **arguments)
@@ -123,7 +91,6 @@ void hours_minutes_to_float(int argcount, char **args)
 		totaltime = minutes+(seconds/60);
 
 		// Output converted, total value to user //
-		//printf("%s minutes, %s seconds:\t", minuteschar, secondschar);
 		printf("%s = ", args[i]);
 		printf("%f minutes\n", totaltime);
 	}
@@ -204,6 +171,7 @@ int main(int argcount, char **args)
 		total_args++;
 	}
 
+	// Modify Program Behavior with Option Flags //
 	for (int i=0;i<sizeof(options);i++) {
 		// Display Help //
 		if (strcmp(options[i], "-h") == 0 || strcmp(options[i], "--help") == 0) {
