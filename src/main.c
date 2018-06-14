@@ -55,7 +55,9 @@ int* numbers_from_argument(char *arg)
 	return numbers;
 }
 
-// TODO convert number_before_colon to 12-hour time and return output string
+/**
+ * Convert number_before_colon to 12-hour time and return output string
+ **/
 int clock24_to_clock12(int military_hour)
 {
 	static int standard_hour = 0;
@@ -66,10 +68,29 @@ int clock24_to_clock12(int military_hour)
 }
 
 /**
+ * Converts 12+:yy time to 0-12:yy time
+ **/
+void print_time_as_12_hour(char* time, int minutes, int seconds)
+{
+	printf("%s = ", time);
+	minutes = clock24_to_clock12(minutes);
+	printf("%d:%d\n", minutes, seconds);
+}
+
+void print_time_as_float(char* time, float minutes, float seconds)
+{
+	float totaltime = 0;
+	totaltime = minutes+(seconds/60);
+
+	// Output converted, total value to user //
+	printf("%s = ", time);
+	printf("%f minutes\n", totaltime);
+}
+
+/**
  * Convert xx:yy to float value of x (converts y to x's)
  **/
-//void hours_minutes_to_float(int argcount, char **args)
-void hours_minutes_to_float(int argcount, char **args, int hour_format)
+void print_times(int argcount, char **args, int hour_format)
 {
 	// Hold marker where seconds start //
 	int secondsi = 0;
@@ -83,18 +104,16 @@ void hours_minutes_to_float(int argcount, char **args, int hour_format)
 		// Converted numbers go here //
 		float minutes = 0;
 		float seconds = 0;
-		float totaltime = 0;
 
 		minutes = numbers_from_argument(args[i])[0];
 		seconds = numbers_from_argument(args[i])[1];
 
-		if (hour_format == 12) minutes = clock24_to_clock12(minutes);
+		if (hour_format == 12) {
+			print_time_as_12_hour(args[i], minutes, seconds);
+			continue;
+		}
 
-		totaltime = minutes+(seconds/60);
-
-		// Output converted, total value to user //
-		printf("%s = ", args[i]);
-		printf("%f minutes\n", totaltime);
+		print_time_as_float(args[i], minutes, seconds);
 	}
 }
 
@@ -156,7 +175,7 @@ int main(int argcount, char **args)
 	char *arguments[total_args];
 	char *options[total_opts];
 
-	// Reuse counters to save memory //
+	// Counters to properly store disordered arg/opt strings in array //
 	int argsi = 0;
 	int optsi = 0;
 
@@ -190,9 +209,8 @@ int main(int argcount, char **args)
 	if (argsi > 0) {
 		if (out_format == 12) {
 			printf("Formatting as 12 hour time...\n");
-			//printf char* output = clock24_to_clock12(arguments);
 		}
-		hours_minutes_to_float(total_args, arguments, out_format);
+		print_times(total_args, arguments, out_format);
 	}
 
 	// Default to Print Help if No Args/Opts //
