@@ -56,21 +56,20 @@ int* numbers_from_argument(char *arg)
 }
 
 // TODO convert number_before_colon to 12-hour time and return output string
-char* clock24_to_clock12(char **arguments)
+int clock24_to_clock12(int military_hour)
 {
-	for (int i=0; i<sizeof(arguments); i++) {
-		//int colon_numbers[2] = numbers_from_argument(arguments[i]);
-		//int number_before_colon = colon_numbers[0];
-		//int number_after_colon = colon_numbers[1];
-	}
+	static int standard_hour = 0;
+	standard_hour = military_hour;
+	if (military_hour > 12) standard_hour = military_hour - 12;
 
-	return arguments[0];
+	return standard_hour;
 }
 
 /**
  * Convert xx:yy to float value of x (converts y to x's)
  **/
-void hours_minutes_to_float(int argcount, char **args)
+//void hours_minutes_to_float(int argcount, char **args)
+void hours_minutes_to_float(int argcount, char **args, int hour_format)
 {
 	// Hold marker where seconds start //
 	int secondsi = 0;
@@ -88,6 +87,9 @@ void hours_minutes_to_float(int argcount, char **args)
 
 		minutes = numbers_from_argument(args[i])[0];
 		seconds = numbers_from_argument(args[i])[1];
+
+		if (hour_format == 12) minutes = clock24_to_clock12(minutes);
+
 		totaltime = minutes+(seconds/60);
 
 		// Output converted, total value to user //
@@ -155,24 +157,24 @@ int main(int argcount, char **args)
 	char *options[total_opts];
 
 	// Reuse counters to save memory //
-	total_args = 0;
-	total_opts = 0;
+	int argsi = 0;
+	int optsi = 0;
 
 	// Split arguments and options to their own arrays //
 	for (int i=1;i<argcount;i++) {
 		// Assign options //
 		if (args[i][0] == '-') {
-			options[total_opts] = args[i];
-			total_opts++;
+			options[optsi] = args[i];
+			optsi++;
 			continue;
 		}
 		// Assign arguments //
-		arguments[total_args] = args[i];
-		total_args++;
+		arguments[argsi] = args[i];
+		argsi++;
 	}
 
 	// Modify Program Behavior with Option Flags //
-	for (int i=0;i<sizeof(options);i++) {
+	for (int i=0;i<optsi;i++) {
 		// Display Help //
 		if (strcmp(options[i], "-h") == 0 || strcmp(options[i], "--help") == 0) {
 			print_help();
@@ -185,16 +187,16 @@ int main(int argcount, char **args)
 	}
 
 	// Convert Time if Args Supplied //
-	if (sizeof(arguments) > 0) {
+	if (argsi > 0) {
 		if (out_format == 12) {
 			printf("Formatting as 12 hour time...\n");
-			//TODO printf char* output = clock24_to_clock12(arguments);
+			//printf char* output = clock24_to_clock12(arguments);
 		}
-		hours_minutes_to_float(total_args, arguments);
+		hours_minutes_to_float(total_args, arguments, out_format);
 	}
 
 	// Default to Print Help if No Args/Opts //
-	if (sizeof(arguments) == 0 && sizeof(options) == 0)
+	if (argsi == 0 && optsi == 0)
 			print_help();
 
 	printf("\n");
