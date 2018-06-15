@@ -8,7 +8,9 @@
 #include <inttypes.h>
 #include <string.h>
 
+#define FALSE 0
 #define MAX_ARG_SIZE 6
+# define TRUE 1
 #define VERSION "1.0"
 
 /**
@@ -238,10 +240,28 @@ int main(int argcount, char **args)
 			continue;
 		}
 
+		// Firewall to prevent anything but 0-9 and : as an argument input //
+		for (int char_i=0; char_i < MAX_ARG_SIZE; char_i++) {
+			char c = 'a';
+			c = args[i][char_i];
+
+			// Prevent from going past argument end in memory //
+			if (c == '\0') break;
+
+			// Will throw an error later if anything below '0' or above ':' //
+			if (c < 30 || c > 58) {
+				printf("Incorrect argument format: An argument must include numbers 0-9 and a ':'\nExiting...\n");
+				error = TRUE;
+				break;
+			}
+		}
+
+		if (error) break;
+
 		// Firewall to ensure args are of the correct length //
 		if (get_pointer_array_element_size(args[i]) > MAX_ARG_SIZE) {
 			printf("Incorrect size of argument: An arg must be %d characters long.\nExiting...\n", MAX_ARG_SIZE-1);
-			error = 1;
+			error = TRUE;
 		}
 
 		// Assign arguments //
