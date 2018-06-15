@@ -16,9 +16,14 @@ $ timec 12:45 8:08 256:32
 256:32 = 256.533325 minutes
 ```
 
+### Options
+There are a few options that you can use to change `timec`'s behavior.
+Using options is started by a `-` or `--` character then the option.
+
 ## Development Roadmap
 There is a list of planned options to be added:
 
-- [ ] `-h` : Displays help information
+- [x] `-h` : Displays help information
 - [ ] `-v` : Displays version info
 - [ ] `-f` : Sets the formatting as stopwatch, 24-hour, or 12-hour time formats
+  - [x] `-f12` sets formatting as 12-hour

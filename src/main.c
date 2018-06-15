@@ -8,6 +8,7 @@
 #include <inttypes.h>
 #include <string.h>
 
+#define MAX_ARG_SIZE 6
 #define VERSION "1.0"
 
 /**
@@ -128,9 +129,27 @@ void print_help()
 					"  timec [<time>...]\n"
 					"  timec -o | --option [<time>...]\n"
 					"\nOptions:\n"
-					"  -h | --help\tDisplay this help message\n"
+					"  -h | --help    Display this help message\n"
+					"  -f12           Format as 12-hour time\n"
 					"\n";
 	printf("%s", help);
+}
+
+/**
+ * Acts like sizeof() but for the size of a pointer array with a safe limit
+ **/
+int get_pointer_array_element_size(char *arg)
+{
+	int maximum_scan_size = 10;
+
+	for (int arg_i=0; arg_i < maximum_scan_size; arg_i++) {
+		// Break when end of string //
+		if (arg[arg_i] == '\0') {
+			// Include the end of the string like sizeof() //
+			return arg_i+1;
+		}
+	}
+	return maximum_scan_size;
 }
 
 /**
@@ -162,6 +181,9 @@ int main(int argcount, char **args)
 	//printf("Time converter\n");
 	printf("\n");
 
+	// Catches Generic Errors //
+	int error = 0;
+
 	// Hold total number of arguments vs options passed in //
 	int total_args = 0;
 	int total_opts = 0;
@@ -188,6 +210,10 @@ int main(int argcount, char **args)
 			continue;
 		}
 		// Assign arguments //
+		if (get_pointer_array_element_size(args[i]) > MAX_ARG_SIZE) {
+			printf("Incorrect size of argument: An arg must be %d characters long.\nExiting...\n", MAX_ARG_SIZE-1);
+			error = 1;
+		}
 		arguments[argsi] = args[i];
 		argsi++;
 	}
@@ -205,17 +231,20 @@ int main(int argcount, char **args)
 		}
 	}
 
-	// Convert Time if Args Supplied //
-	if (argsi > 0) {
-		if (out_format == 12) {
-			printf("Formatting as 12 hour time...\n");
-		}
-		print_times(total_args, arguments, out_format);
-	}
+	// Only Proceed with Program if no Errors //
+	if (!error) {
+			// Convert Time if Args Supplied //
+			if (argsi > 0) {
+				if (out_format == 12) {
+					printf("Formatting as 12 hour time...\n");
+				}
+				print_times(total_args, arguments, out_format);
+			}
 
-	// Default to Print Help if No Args/Opts //
-	if (argsi == 0 && optsi == 0)
-			print_help();
+			// Default to Print Help if No Args/Opts //
+			if (argsi == 0 && optsi == 0)
+					print_help();
+	}
 
 	printf("\n");
 
