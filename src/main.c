@@ -176,6 +176,35 @@ int* get_total_number_args_options(int argcount, char **args)
 	return argsOpts;
 }
 
+/**
+ * Main program code
+ **/
+void run_program(int args_count, int opts_count, char **arguments, char **options)
+{
+	int out_format = 24;
+	// Modify Program Behavior with Option Flags //
+	for (int i=0;i<opts_count;i++) {
+		// Display Help //
+		if (strcmp(options[i], "-h") == 0 || strcmp(options[i], "--help") == 0) {
+			print_help();
+			return;
+		}
+		// Set 12-hour Output Formatting //
+		if (strcmp(options[i], "-f12") == 0) out_format = 12;
+	}
+
+	// Convert Time if Args Supplied //
+	if (args_count > 0) {
+		if (out_format == 12) {
+			printf("Formatting as 12 hour time...\n");
+		}
+		print_times(args_count, arguments, out_format);
+	}
+
+	// Default to Print Help if No Args/Opts //
+	if (args_count == 0 && opts_count == 0) print_help();
+}
+
 int main(int argcount, char **args)
 {
 	//printf("Time converter\n");
@@ -187,7 +216,6 @@ int main(int argcount, char **args)
 	// Hold total number of arguments vs options passed in //
 	int total_args = 0;
 	int total_opts = 0;
-	int out_format = 24;
 
 	// Get total amount of arguments vs options from parameters //
 	total_args = get_total_number_args_options(argcount, args)[0];
@@ -209,41 +237,21 @@ int main(int argcount, char **args)
 			optsi++;
 			continue;
 		}
-		// Assign arguments //
+
+		// Firewall to ensure args are of the correct length //
 		if (get_pointer_array_element_size(args[i]) > MAX_ARG_SIZE) {
 			printf("Incorrect size of argument: An arg must be %d characters long.\nExiting...\n", MAX_ARG_SIZE-1);
 			error = 1;
 		}
+
+		// Assign arguments //
 		arguments[argsi] = args[i];
 		argsi++;
 	}
 
-	// Modify Program Behavior with Option Flags //
-	for (int i=0;i<optsi;i++) {
-		// Display Help //
-		if (strcmp(options[i], "-h") == 0 || strcmp(options[i], "--help") == 0) {
-			print_help();
-			return 0;
-		}
-		// Set 12-hour Output Formatting //
-		if (strcmp(options[i], "-f12") == 0) {
-			out_format = 12;
-		}
-	}
-
 	// Only Proceed with Program if no Errors //
 	if (!error) {
-			// Convert Time if Args Supplied //
-			if (argsi > 0) {
-				if (out_format == 12) {
-					printf("Formatting as 12 hour time...\n");
-				}
-				print_times(total_args, arguments, out_format);
-			}
-
-			// Default to Print Help if No Args/Opts //
-			if (argsi == 0 && optsi == 0)
-					print_help();
+		run_program(argsi, optsi, arguments, options);
 	}
 
 	printf("\n");
