@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <string.h>
+#include <math.h>
 
 #define FALSE 0
 #define MAX_ARG_SIZE 6
@@ -133,8 +134,49 @@ void print_help()
 					"\nOptions:\n"
 					"  -h | --help    Display this help message\n"
 					"  -f12           Format as 12-hour time\n"
+					"  -fd            Format time in decimal format\n"
+					"  -d <t1> <t2>   Calculate difference between t1 and t2 (t1-t2)\n"
 					"\n";
 	printf("%s", help);
+}
+
+/**
+ * Converts mm:ss to mm.%ss and subtracts the second time given from the first
+ **/
+void print_time_difference(int args_count, char **args, int format_decimal)
+{
+	// TODO?: Merge this functionality with print_times to new get_minutes_and_seconds() that returns minutes as int and seconds as int
+	char minutesch[10],	secondsch[10];
+	float minutes = 0, firstminutes = 0, secondminutes = 0;
+	float seconds = 0, firstseconds = 0, secondseconds = 0;
+	float time = 0;
+
+	printf("Calculating time difference...\n");
+
+	// Get first time values //
+	firstminutes = numbers_from_argument(args[0])[0];
+	firstseconds = numbers_from_argument(args[0])[1];
+
+	// Get second time values //
+	secondminutes = numbers_from_argument(args[1])[0];
+	secondseconds = numbers_from_argument(args[1])[1];
+
+	// Get time difference in decimat (mm.%ss) format //
+	if (format_decimal == TRUE) {
+		float firsttime = 0, secondtime = 0;
+		firsttime = firstminutes + (firstseconds/60);
+		secondtime = secondminutes + (secondseconds/60);
+
+		time = firsttime - secondtime;
+		printf("%s-%s = %f minutes\n", args[0], args[1], fabs(time));
+		return;
+	}
+
+	// Default to printing difference in time (mm:ss) format //
+	minutes = firstminutes - secondminutes;
+	seconds = firstseconds - secondseconds;
+
+	printf("%s-%s = %0.0f:%0.0f\n", args[0], args[1], fabs(minutes), fabs(seconds));
 }
 
 /**
@@ -184,6 +226,8 @@ int* get_total_number_args_options(int argcount, char **args)
 void run_program(int args_count, int opts_count, char **arguments, char **options)
 {
 	int out_format = 24;
+	int format_decimal = FALSE;
+	int get_time_diff = FALSE;
 	// Modify Program Behavior with Option Flags //
 	for (int i=0;i<opts_count;i++) {
 		// Display Help //
@@ -191,14 +235,22 @@ void run_program(int args_count, int opts_count, char **arguments, char **option
 			print_help();
 			return;
 		}
+		// Format output in decimal (mm.%ss) format //
+		if (strcmp(options[i], "-fd") == 0) format_decimal = TRUE;
 		// Set 12-hour Output Formatting //
 		if (strcmp(options[i], "-f12") == 0) out_format = 12;
+		// Perform Difference between 2 times //
+		if (strcmp(options[i], "-d") == 0) get_time_diff = TRUE;
 	}
 
 	// Convert Time if Args Supplied //
 	if (args_count > 0) {
 		if (out_format == 12) {
 			printf("Formatting as 12 hour time...\n");
+		}
+		if (get_time_diff == TRUE) {
+			print_time_difference(args_count, arguments, format_decimal);
+			return;
 		}
 		print_times(args_count, arguments, out_format);
 	}
