@@ -11,7 +11,7 @@
 
 #define FALSE 0
 #define MAX_ARG_SIZE 6
-# define TRUE 1
+#define TRUE 1
 #define VERSION "1.0"
 
 /**
@@ -21,32 +21,29 @@ int* numbers_from_argument(char *arg)
 {
 	static int numbers[2] = {0,0};
 
-	// Hold marker where seconds start //
-	int secondsi = 0;
-
 	// Temp segregated time values for later conversion //
-	char minuteschar[10];
-	char secondschar[10];
+	char minuteschar[3];
+	char secondschar[3];
 
 	// Converted numbers go here //
 	int minutes = 0;
 	int seconds = 0;
 
-	// Iterate through all characters in argument //
-	for (int j=0;j<sizeof(arg)+2;j++) {
+	// Iterate through all characters in argument for lazy #:# instead of ##:## //
+	for (int j=0;j<sizeof(arg);j++) {
 		char argch = arg[j];
 
-		// Find minutes-seconds marker //
+		// Find minutes-seconds marker and set seconds only //
 		if (argch == ':') {
-			secondsi = j;
-			continue;
+			secondschar[0] = arg[j+1];
+
+			if (j+2 <= sizeof(arg)) {
+				secondschar[1] = arg[j+2];
+			}
+
+			break;
 		}
 
-		// Print out minutes only //
-		if (j > secondsi && secondsi != 0) {
-			secondschar[j-secondsi-1] = argch;
-			continue;
-		}
 		minuteschar[j] = argch;
 	}
 
