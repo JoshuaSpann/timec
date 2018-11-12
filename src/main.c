@@ -85,7 +85,7 @@ void print_time_as_float(char* time, float minutes, float seconds)
 
 	// Output converted, total value to user //
 	printf("%s = ", time);
-	printf("%f minutes\n", totaltime);
+	printf("%.3f minutes\n", totaltime);
 }
 
 /**
