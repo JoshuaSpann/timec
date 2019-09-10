@@ -6,10 +6,29 @@ let options = {
 }
 function timec(arg) {
 	if (arg === undefined) {
-		try{arg = process.argv.splice(2)}catch (err){}
+		try{
+			arg = process.argv.splice(2)
+			arg = setOptions(arg)
+		}catch (err){}
 	}
 	if (Array.isArray(arg) === true) return formatResults(timecFromArray(arg))
 	return formatResults(timecFromArray([arg]))
+}
+function setOptions(args) {
+	let arg = []
+	for (let args_i = 0; args_i < args.length; args_i++) {
+		let currArg = args[args_i]
+		if (['d','decimal','-d','-decimal'].includes(currArg)) {
+			options.asDecimal = true
+			continue
+		}
+		if (['s','sub','subtract','-s','-sub','-subtract'].includes(currArg)) {
+			options.subtract = true
+			continue
+		}
+		arg.push(currArg)
+	}
+	return arg
 }
 
 function timecFromValue(arg) {
