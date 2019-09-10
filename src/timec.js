@@ -21,7 +21,34 @@ function timecFromValue(arg) {
 function timecFromArray(args) {
 	let timecResultsArr = []
 	for (let args_i=0; args_i<args.length; args_i++) {
-		timecResultsArr.push({key: args[args_i], value: timecFromValue(args[args_i])})
+		let keyValue = args_i
+		let timevalue = 0
+		if (options.asDecimal === true) {
+			let decimalTimeValue = timecFromValue(args[args_i])
+			keyValue = args[args_i]
+			timevalue = decimalTimeValue
+		}
+		if (options.subtract === true && (args_i > 1 && args_i % 2 === 0)) {
+			let lastArg = args[args_i-1]
+			let currentArg = args[args_i]
+
+			let lastValue = {}
+			lastValue.main = parseInt(lastArg.substr(0,1))
+			lastValue.sub = parseInt(lastArg.substr(2,3))
+			let currentValue = {}
+			currentValue.main = parseInt(currentArg.substr(0,1))
+			currentValue.sub = parseInt(currentArg.substr(2,3))
+
+			let newMain = lastValue.main-currentValue.main
+			if (newMain <= 0) newMain = '00:'
+			let newSub = lastValue.sub-currentValue.sub
+			if (newSub <= 0) newSub = '00'
+
+			timevalue = `${newMain}${newSub}`
+			if (options.asDecimal === true) timevalue = timecFromValue(timevalue)
+			keyValue = `${lastArg} - ${currentArg}`
+		}
+		timecResultsArr.push({key: keyValue, value: timevalue})
 	}
 	return timecResultsArr
 }
@@ -60,4 +87,6 @@ function formatResults(arr) {
 	outputString += '\n'
 	return outputString
 }
+
+options.subtract = true
 try {console.log(timec())}catch(err){}
