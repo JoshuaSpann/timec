@@ -1,0 +1,27 @@
+<html>
+<body>
+<input type='text' id='args'/>
+<div id='results'>
+</div>
+</body>
+<script src='timec.js'> </script>
+<script>
+let results = document.querySelector('#results')
+let input = document.querySelector('#args')
+input.onkeyup = ()=> {
+	if (input.value === '') {
+		results.innerHTML = ''
+		return
+	}
+	options.asHtml = true
+	let arr = input.value.split(' ')
+	let displayValue = ''
+	if (arr.length > 1) {
+		displayValue = timec(arr)
+	}
+	else displayValue = timec(input.value)
+
+	results.innerHTML = displayValue
+}
+</script>
+</html>
