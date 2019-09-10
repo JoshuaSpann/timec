@@ -1,6 +1,7 @@
 <html>
 <body>
 <input type='text' id='args'/>
+Subtract Values: <input type='checkbox' id='subtractCheckbox'/>
 <div id='results'>
 </div>
 </body>
@@ -8,6 +9,12 @@
 <script>
 let results = document.querySelector('#results')
 let input = document.querySelector('#args')
+let subtractCheckbox = document.querySelector('#subtractCheckbox')
+subtractCheckbox.onchange = ()=>{
+	if (subtractCheckbox.checked === true) options.subtract = true
+	else options.subtract = false
+	input.onkeyup()
+}
 input.onkeyup = ()=> {
 	if (input.value === '') {
 		results.innerHTML = ''

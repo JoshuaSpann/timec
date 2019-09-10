@@ -98,5 +98,4 @@ function formatResults(arr) {
 	return outputString
 }
 
-options.subtract = true
 try {console.log(timec())}catch(err){}
