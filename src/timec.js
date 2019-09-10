@@ -16,17 +16,8 @@ function timecFromValue(arg) {
 		return (timecFromString(arg))
 }
 function timecFromArray(args) {
-/*
-	let timecResults = {}
-	for (let args_i in args) {
-		let arg = args[args_i]
-		timecResults[arg] = timecFromValue(arg)
-	}
-	return timecResults
-*/
 	let timecResultsArr = []
 	for (let args_i=0; args_i<args.length; args_i++) {
-		let key = Object.keys(args)[args_i]
 		timecResultsArr.push({key: args[args_i], value: timecFromValue(args[args_i])})
 	}
 	return timecResultsArr
@@ -55,12 +46,9 @@ function timecMain(mainUnit, subUnit) {
 function formatResults(arr) {
 	let outputString = '\n'
 	for (let arr_i in arr) {
-		let key = arr_i
-		let value = arr[arr_i]
+		let key = arr[arr_i].key
+		let value = arr[arr_i].value
 
-		key = Object.keys(arr)[arr_i]
-		key = arr[arr_i].key
-		value = arr[arr_i].value
 
 		let delimiter = '\n'
 		if (options.asHtml === true) delimiter = '<br>'
@@ -69,7 +57,3 @@ function formatResults(arr) {
 	outputString += '\n'
 	return outputString
 }
-		
-
-//console.log(timec([1230, '13:15', '1246']))
-//console.log(timec(1367))

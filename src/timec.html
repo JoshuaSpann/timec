@@ -14,8 +14,10 @@ input.onkeyup = ()=> {
 		return
 	}
 	options.asHtml = true
+
 	let arr = input.value.split(' ')
 	let displayValue = ''
+
 	if (arr.length > 1) {
 		displayValue = timec(arr)
 	}
