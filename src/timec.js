@@ -5,6 +5,9 @@ let options = {
 	subtract: false
 }
 function timec(arg) {
+	if (arg === undefined) {
+		try{arg = process.argv.splice(2)}catch (err){}
+	}
 	if (Array.isArray(arg) === true) return formatResults(timecFromArray(arg))
 	return formatResults(timecFromArray([arg]))
 }
@@ -57,3 +60,4 @@ function formatResults(arr) {
 	outputString += '\n'
 	return outputString
 }
+try {console.log(timec())}catch(err){}
