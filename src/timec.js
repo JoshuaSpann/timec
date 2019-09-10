@@ -22,13 +22,13 @@ function timecFromArray(args) {
 	let timecResultsArr = []
 	for (let args_i=0; args_i<args.length; args_i++) {
 		let keyValue = args_i
-		let timevalue = 0
-		if (options.asDecimal === true) {
+		let timevalue = -1
+		if (options.asDecimal === true && options.subtract === false) {
 			let decimalTimeValue = timecFromValue(args[args_i])
 			keyValue = args[args_i]
 			timevalue = decimalTimeValue
 		}
-		if (options.subtract === true && (args_i > 0 && args_i % 2 === 0)) {
+		if (options.subtract === true && (args_i > 0) && ((args_i+1) % 2 === 0) ) {
 			let lastArg = args[args_i-1]
 			let currentArg = args[args_i]
 
@@ -37,6 +37,7 @@ function timecFromArray(args) {
 			timevalue = subtractValues(lastArg, currentArg)
 			if (options.asDecimal === true) timevalue = timecFromValue(timevalue)
 		}
+		if (timevalue === -1) continue
 		timecResultsArr.push({key: keyValue, value: timevalue})
 	}
 	return timecResultsArr
@@ -52,8 +53,13 @@ function subtractValues(lastArg, currentArg) {
 
 			let newMain = lastValue.main-currentValue.main
 			let newSub = lastValue.sub-currentValue.sub
+
 			if (newMain <= 0) newMain = '00:'
+			else if (newMain < 10) newMain = `0${newMain}`
+
 			if (newSub <= 0) newSub = '00'
+			else if (newSub < 10) newSub = `0${newSub}`
+
 			return `${newMain}${newSub}`
 }
 function timecFromInt(arg) {
