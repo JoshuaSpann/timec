@@ -1,0 +1,36 @@
+<html>
+<body>
+<input type='text' id='args'/>
+Subtract Values: <input type='checkbox' id='subtractCheckbox'/>
+<div id='results'>
+</div>
+</body>
+<script src='timec.js'> </script>
+<script>
+let results = document.querySelector('#results')
+let input = document.querySelector('#args')
+let subtractCheckbox = document.querySelector('#subtractCheckbox')
+subtractCheckbox.onchange = ()=>{
+	if (subtractCheckbox.checked === true) options.subtract = true
+	else options.subtract = false
+	input.onkeyup()
+}
+input.onkeyup = ()=> {
+	if (input.value === '') {
+		results.innerHTML = ''
+		return
+	}
+	options.asHtml = true
+
+	let arr = input.value.split(' ')
+	let displayValue = ''
+
+	if (arr.length > 1) {
+		displayValue = timec(arr)
+	}
+	else displayValue = timec(input.value)
+
+	results.innerHTML = displayValue
+}
+</script>
+</html>
